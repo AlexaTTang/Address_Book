@@ -135,9 +135,14 @@ Status add_contacts(AddressBook *address_book)
 	/* Add the functionality for adding contacts here */
 	ContactInfo info;
 	FILE *fp;
+	if((fp = fopen(DEFAULT_FILE, "a+")) == NULL)
+	{	
+		printf("File cannot be opened \n");
+		return e_fail;
+	}
 	fp = fopen(DEFAULT_FILE, "a");
 	printf("Enter username : ");
-	scanf("\n %s", info.name);
+	scanf("\n%[^\n]s", info.name);
 	printf("Enter phone no : ");
 	scanf("%s", info.phone_numbers);
 	printf("Enter email id : ");
@@ -168,8 +173,26 @@ Status delete_contact(AddressBook *address_book)
 	/* Add the functionality for delete contacts here */
 }
 
-/* int main(){
+int main(){
 	AddressBook address_book;
 	add_contacts(&address_book);
+	FILE *infile;
+    ContactInfo information;
+     
+	 
+    // Open person.dat for reading
+    infile = fopen (DEFAULT_FILE, "r");
+    if (infile == NULL)
+    {
+        fprintf(stderr, "\nError opening file\n");
+        exit (1);
+    }
+     
+    // read file contents till end of file
+    while(fread(&information, sizeof(ContactInfo), 1, infile))
+        printf ("Name = %s Phone Number = %s Email address %s\n", information.name, information.phone_numbers, information.email_addresses);
+ 
+    // close file
+    fclose (infile);
 	return 0;
-} */
+}
