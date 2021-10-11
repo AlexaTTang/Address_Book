@@ -106,6 +106,7 @@ Status menu(AddressBook *address_book)
 		{
 			case e_add_contact:
 				/* Add your implementation to call add_contacts function here */
+				add_contacts(address_book);
 				break;
 			case e_search_contact:
 				search_contact(address_book);
@@ -142,7 +143,7 @@ Status add_contacts(AddressBook *address_book)
 	}
 	fp = fopen(DEFAULT_FILE, "a");
 	printf("Enter username : ");
-	scanf("\n%[^\n]s", info.name);
+	scanf("\n%s", info.name);
 	printf("Enter phone no : ");
 	scanf("%s", info.phone_numbers);
 	printf("Enter email id : ");
@@ -156,6 +157,7 @@ Status add_contacts(AddressBook *address_book)
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
 {
 	/* Add the functionality for adding contacts here */
+
 }
 
 Status search_contact(AddressBook *address_book)
@@ -173,14 +175,10 @@ Status delete_contact(AddressBook *address_book)
 	/* Add the functionality for delete contacts here */
 }
 
-int main(){
-	AddressBook address_book;
-	add_contacts(&address_book);
+Status list_All_Contacts(AddressBook *addressbook){
 	FILE *infile;
     ContactInfo information;
      
-	 
-    // Open person.dat for reading
     infile = fopen (DEFAULT_FILE, "r");
     if (infile == NULL)
     {
@@ -190,9 +188,14 @@ int main(){
      
     // read file contents till end of file
     while(fread(&information, sizeof(ContactInfo), 1, infile))
-        printf ("Name = %s Phone Number = %s Email address %s\n", information.name, information.phone_numbers, information.email_addresses);
+        printf ("Name = %s  Phone Number = %s  Email address %s\n", information.name, information.phone_numbers, information.email_addresses);
  
     // close file
     fclose (infile);
-	return 0;
+}
+
+int main(){
+	AddressBook address_book;
+	add_contacts(&address_book);
+	list_All_Contacts(&address_book);
 }
