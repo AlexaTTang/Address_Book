@@ -58,9 +58,11 @@ void menu_header(const char *str)
 {
 	fflush(stdout);
 
-	system("clear");
-
-
+	printf("#######  Address Book  #######\n");
+	if (*str != '\0')
+	{
+		printf("#######  %s\n", str);
+	}
 }
 
 void main_menu(void)
@@ -83,7 +85,7 @@ Status menu(AddressBook *address_book)
 	ContactInfo backup;
 	Status ret;
 	int option;
-
+	char exitOpt;
 	do
 	{
 		main_menu();
@@ -118,15 +120,20 @@ Status menu(AddressBook *address_book)
 				delete_contact(address_book);
 				break;
 			case e_list_contacts:
+				list_All_Contacts(address_book);
 				break;
 				/* Add your implementation to call list_contacts function here */
 			case e_save:
 				save_file(address_book);
 				break;
 			case e_exit:
+				option = e_exit;
 				break;
 		}
-	} while (option != e_exit);
+		getchar();
+		printf("Would you like to exit the program? y/n: ");
+		scanf("%c", &exitOpt);
+	} while ( exitOpt != 'y');
 
 	return e_success;
 }
@@ -194,8 +201,11 @@ Status list_All_Contacts(AddressBook *addressbook){
     fclose (infile);
 }
 
+/*
 int main(){
 	AddressBook address_book;
 	add_contacts(&address_book);
 	list_All_Contacts(&address_book);
+	menu(&address_book);
 }
+*/

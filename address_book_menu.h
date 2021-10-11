@@ -18,5 +18,6 @@ Status search_contact(AddressBook *address_book);
 Status edit_contact(AddressBook *address_book);
 Status delete_contact(AddressBook *address_book);
 Status list_contacts(AddressBook *address_book, const char *title, int *index, const char *msg, Modes mode);
+Status list_All_Contacts(AddressBook *addressbook);
 
 #endif
