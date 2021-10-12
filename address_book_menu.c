@@ -152,7 +152,11 @@ Status add_contacts(AddressBook *address_book)
 	printf("Enter username : ");
 	scanf("\n%s", info.name);
 	printf("Enter phone no : ");
-	scanf("%s", info.phone_numbers);
+	scanf("%s", info.phone_numbers[0]);
+	getchar();
+	printf("Enter phone no#2: ");
+	scanf("%s", info.phone_numbers[1]);
+	getchar();
 	printf("Enter email id : ");
 	scanf("%s", info.email_addresses);
 	fwrite(&info, sizeof(info), 1, fp);
@@ -195,7 +199,13 @@ Status list_All_Contacts(AddressBook *addressbook){
      
     // read file contents till end of file
     while(fread(&information, sizeof(ContactInfo), 1, infile))
-        printf ("Name = %s  Phone Number = %s  Email address %s\n", information.name, information.phone_numbers, information.email_addresses);
+	{
+        printf ("Name = %s  \n", information.name);
+		for(int i = 0; i < 5; i++){
+			printf("Phone number %d: %s \n", i, information.phone_numbers[i]);
+		}
+		printf ("Email = %s  \n", information.email_addresses);
+	}
  
     // close file
     fclose (infile);
