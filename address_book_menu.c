@@ -168,7 +168,7 @@ Status add_contacts(AddressBook *address_book)
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
 {
 	/* Add the functionality for adding contacts here */
-
+	; // Do nothing
 }
 
 Status search_contact(AddressBook *address_book)
@@ -184,6 +184,107 @@ Status edit_contact(AddressBook *address_book)
 Status delete_contact(AddressBook *address_book)
 {
 	/* Add the functionality for delete contacts here */
+	ContactInfo delInfo;
+
+	FILE *fp;
+	FILE *rewriteFile;
+
+	if ((fp = fopen(DEFAULT_FILE, "r")) == NULL) {
+		printf("File can't be opened\n");
+		return e_fail;
+	}
+	else {
+		rewriteFile = fopen("temporaryFile.csv", "w");
+		if (rewriteFile == NULL) {
+			printf("File can't be opened\n");
+			return e_fail;
+		}
+	}
+
+	char name[NAME_LEN];
+	char phoneNum[NUMBER_LEN];
+	char email[EMAIL_ID_LEN];
+
+	menu_header("Search Contact to Delete By:\n");
+	printf("1. Name\n");
+	printf("2. Phone No\n");
+	printf("3. Email ID\n");
+	printf("4. Serial No\n");
+	printf("\nPlease select an option: ");
+	int selection;
+
+	scanf("%d", &selection);
+
+	int counter;
+	int saveCounter;
+	switch(selection) {
+		case 0:
+			return e_back;
+		case 1:
+			printf("Enter the Name: ");
+			scanf("\n%s", name);
+
+			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
+				if (strcmp(name, *delInfo.name)) {
+					fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
+					counter = 0;
+				}
+				else {
+					counter++;
+					saveCounter = counter;
+					printf("Deleted Successfully\n");
+				}
+			}
+			break;
+		case 2:
+			printf("Enter the Phone No: ");
+			scanf("%s", phoneNum);
+
+			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
+				if (strcmp(phoneNum, *delInfo.phone_numbers)) {
+					fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
+					counter = 0;
+				}
+				else {
+					counter++;
+					saveCounter = counter;
+				}
+			}
+			break;
+		case 3:
+			printf("Enter the Email ID: ");
+			scanf("%s", email);
+
+			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
+				if (strcmp(email, *delInfo.email_addresses)) {
+					fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
+					counter = 0;
+				}
+				else {
+					counter++;
+					saveCounter = counter;
+				}
+			}
+			break;
+		default:
+			printf("Invalid option.\n");
+			return e_no_match;
+	}
+
+	fclose(fp);
+	fclose(rewriteFile);
+
+	remove(DEFAULT_FILE);
+	rename("temporaryFile.csv", DEFAULT_FILE);
+
+	if (!saveCounter) {
+		printf("Could not find that contact detail.\n");
+		return e_fail;
+	}
+	else {
+		printf("That contact details has been deleted successfully.\n");
+	}
+	return e_success;
 }
 
 Status list_All_Contacts(AddressBook *addressbook){

@@ -24,18 +24,18 @@ Status load_file(AddressBook *address_book)
 		 * Do the neccessary step to open the file
 		 * Do error handling
 		 */ 
-		address_book->fp = fopen(DEFAULT_FILE, "a+");
+		// address_book->fp = fopen(DEFAULT_FILE, "a+");
 		
 		// If file does not exist
 		if (address_book->fp == NULL)
-	{
-		return e_fail;
-	}
+		{
+			return e_fail;
+		}
 	}
 	else
 	{
 		/* Create a file for adding entries */
-		address_book->fp = fopen(DEFAULT_FILE, "w+");
+		// address_book->fp = fopen(DEFAULT_FILE, "w+");
 	}
 
 	return e_success;
