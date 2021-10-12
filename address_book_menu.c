@@ -1,24 +1,28 @@
 #include <stdio.h>
-#include <stdio_ext.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-#include "abk_fileops.h"
-#include "abk_log.h"
-#include "abk_menus.h"
-#include "abk.h"
+#include "address_book_fops.h"
+#include "address_book_menu.h"
+#include "address_book.h"
 
 int get_option(int type, const char *msg)
 {
-	/*
-	 * Mutilfuction user intractions like
-	 * Just an enter key detection
-	 * Read an number
-	 * Read a charcter
-	 */ 
-
-	/* Fill the code to add above functionality */
+	printf("%s", msg);
+   	switch (type)
+   	{
+		case NONE:
+         	return e_no_opt;
+      	case NUM:
+         	int option;
+         	scanf("%d", &option);
+         	return option;
+      	case CHAR:
+         	char option;
+         	scanf("%c", &option);
+         	return option;
+   	}
 }
 
 Status save_prompt(AddressBook *address_book)
@@ -138,12 +142,116 @@ Status add_contacts(AddressBook *address_book)
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
 {
-	/* Add the functionality for adding contacts here */
+	menu_header("Search Result: \n"); // Adds header saying address book
+
+    printf("=============================================================================================================="); // Top border
+    printf("\n: S.No : Name                            : Phone No                        : Email ID                        :"); // Headers
+    printf("\n=============================================================================================================="); // Middle border
+
+	ContactInfo *ptr = address_book->list; // Get starting pointer
+   	ContactInfo *endPtr = ptr + address_book->count; // Get ending pointer
+   	unsigned int matchFound = 0;
+	int match = 0;
+
+   	for (ptr; ptr < endPtr; ptr++) {
+		ContactInfo contact;
+
+		switch (field) {
+      		case 1:
+     			match = strcmp(str, ptr->name[0]); // Check if the user's search matches any names
+				break;
+			case 2:
+         		for (int phone = 0; phone < PHONE_NUMBER_COUNT; phone++) {
+        	 		if (strcmp(str, ptr->phone_numbers[phone]) == 0) // Check if the user's search matches any phone numbers
+           				match = 0;
+     			}
+         		match = 1;
+				break;
+    		case 3:
+     			for (int email = 0; email < EMAIL_ID_COUNT; email++) {
+					if (strcmp(str, ptr->email_addresses[email]) == 0) // Check if the user's search matches any email addresses
+               		match = 0;
+         		}
+         		match = 1;
+				break;
+      		case 4:
+         		match = atoi(str) != ptr->si_no; // Check if the user's search matches any serial numbers
+				break;
+   		}
+
+      	if (match == 0) {
+         	matchFound++;
+         	printf("\n: %d", contact.si_no); // Prints serial number
+
+         	printf(": %-32s", contact.name); // Prints name
+         
+         	printf(": %-32s", contact.phone_numbers[0]); // Prints a phone number
+
+         	printf(": %-32s:\n", contact.email_addresses[0]); // Prints an email address
+
+         	for (int info = 1; info < PHONE_NUMBER_COUNT; info++) {
+            	printf(":      :                                 : %-32s", contact.phone_numbers[info]); // Print other phone numbers
+
+            	printf(": %-32s:\n", contact.email_addresses[info]); // Print other email addresses
+         	}
+         	printf("\n=============================================================================================================="); // Bottom border
+      	}
+    }
+
+    printf("%s", msg);
+
+    if (matchFound > 0)
+       return e_success; // Successful if a match was found
+    else if (matchFound < 0)
+       return e_fail; // Unsuccessful if no matches were found
+
+    return e_no_match;
 }
 
 Status search_contact(AddressBook *address_book)
 {
-	/* Add the functionality for search contacts here */
+	char *name, *phoneNo, *emailId, *serialNo; 
+	char *qToCancel = "Press: [q] | Cancel: ";
+   	Status status;
+
+	menu_header("Search contact by: \n"); // Adds header saying address book
+   	printf("0. Back\n1. Name\n2. Phone No\n3. Email ID\n4. Serial No\n\n"); //Lists search options
+
+   	int searchOption = get_option(NUM, "Please select an option: "); // Asks for user input
+
+	switch (searchOption) {
+   		case 0: // If user selects to go back
+      		return e_back;
+			break;
+   		case 1: // If user selects to search by name
+      		printf("Enter the Name: ");
+      		scanf("%s", &name);
+      		status = search(name, address_book, 0, 1, qToCancel, e_search); // Search address book based on target name
+			break;
+		case 2: // If user selects to search by phone number
+      		printf("Enter the Phone Number: ");
+      		scanf("%s", phoneNo);
+      		status = search(phoneNo, address_book, 0, 2, qToCancel, e_search); // Search address book based on target phone number
+			break;
+		case 3: // If user selects to search by email ID
+      		printf("Enter the Email ID: ");
+      		scanf("%s", emailId);
+      		status = search(emailId, address_book, 0, 3, qToCancel, e_search); // Search address book based on target email address
+			break;
+		case 4: // If user selects to search by serial number
+      		printf("Enter the Serial Number: ");
+      		scanf("%s", &serialNo);
+      		status = search(serialNo, address_book, 0, 4, qToCancel, e_search); // Search address book based on target serial number
+			break;
+		default: // If user selects an invalid number
+      		status = e_fail;
+			break;
+	}
+	
+   	char option = get_option(CHAR, ""); // Allow user to press q to cancel
+
+   	if (option == 'q')
+      	return status; // Leaves same status from last search because user canceled
 }
 
 Status edit_contact(AddressBook *address_book)
