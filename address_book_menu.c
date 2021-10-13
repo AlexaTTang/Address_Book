@@ -220,7 +220,7 @@ Status edit_contact(AddressBook *address_book)
 			scanf("\n%s", name);
 
 			while (fread(&editInfo, sizeof(editInfo), 1, fp) == 1) {
-				if (strcmp(name, *editInfo.name)) { //finding the contact to edit
+				if (!strcmp(name, *editInfo.name)) { //finding the contact to edit
 					printf("Enter the name you would like to change to: ");
 					scanf("\n%s", editInfo.name);
 					fwrite(&editInfo, sizeof(editInfo), 1, rewriteFile);
