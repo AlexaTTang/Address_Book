@@ -143,12 +143,11 @@ Status add_contacts(AddressBook *address_book)
 	/* Add the functionality for adding contacts here */
 	ContactInfo info;
 	FILE *fp;
-	if((fp = fopen(DEFAULT_FILE, "a+")) == NULL)
+	if((fp = fopen(DEFAULT_FILE, "a")) == NULL)
 	{	
 		printf("File cannot be opened \n");
 		return e_fail;
 	}
-	fp = fopen(DEFAULT_FILE, "a");
 	printf("Enter username : ");
 	scanf("\n%s", info.name);
 	printf("Enter phone no : ");
@@ -206,6 +205,7 @@ Status delete_contact(AddressBook *address_book)
 	char email[EMAIL_ID_LEN];
 
 	menu_header("Search Contact to Delete By:\n");
+	printf("0. Back \n");
 	printf("1. Name\n");
 	printf("2. Phone No\n");
 	printf("3. Email ID\n");

@@ -16,7 +16,7 @@ Status load_file(AddressBook *address_book)
 	 * Check for file existance
 	 */
 	// ret = 0 if the file exists and 1 if not
-	ret = access(DEFAULT_FILE, F_OK);
+	// ret = access(DEFAULT_FILE, F_OK);
 
 	if (ret == 0)
 	{
@@ -47,7 +47,7 @@ Status save_file(AddressBook *address_book)
 	 * Write contacts back to file.
 	 * Re write the complete file currently
 	 */ 
-	address_book->fp = fopen(DEFAULT_FILE, "w");
+	// address_book->fp = fopen(DEFAULT_FILE, "w");
 
 	if (address_book->fp == NULL)
 	{
@@ -59,7 +59,7 @@ Status save_file(AddressBook *address_book)
 	 * Make sure to do error handling
 	 */ 
 
-	fclose(address_book->fp);
+	// fclose(address_book->fp);
 
 	return e_success;
 }
