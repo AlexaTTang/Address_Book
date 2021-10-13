@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+//#include <unistd.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include <ctype.h>
@@ -16,7 +16,7 @@ Status load_file(AddressBook *address_book)
 	 * Check for file existance
 	 */
 	// ret = 0 if the file exists and 1 if not
-	ret = access(DEFAULT_FILE, F_OK);
+	//ret = access(DEFAULT_FILE, F_OK);
 
 	if (ret == 0)
 	{
