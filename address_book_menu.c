@@ -1,13 +1,11 @@
 #include <stdio.h>
-#include <stdio_ext.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-#include "abk_fileops.h"
-#include "abk_log.h"
-#include "abk_menus.h"
-#include "abk.h"
+#include "address_book_fops.h"
+#include "address_book_menu.h"
+#include "address_book.h"
 
 int get_option(int type, const char *msg)
 {
@@ -60,10 +58,8 @@ void menu_header(const char *str)
 {
 	fflush(stdout);
 
-	system("clear");
-
 	printf("#######  Address Book  #######\n");
-	if (str != '\0')
+	if (*str != '\0')
 	{
 		printf("#######  %s\n", str);
 	}
@@ -89,7 +85,7 @@ Status menu(AddressBook *address_book)
 	ContactInfo backup;
 	Status ret;
 	int option;
-
+	char exitOpt;
 	do
 	{
 		main_menu();
@@ -103,10 +99,16 @@ Status menu(AddressBook *address_book)
 			continue;
 		}
 
+		printf("Enter your option: ");
+		int option;
+		scanf("%d", &option);
+		
+
 		switch (option)
 		{
 			case e_add_contact:
 				/* Add your implementation to call add_contacts function here */
+				add_contacts(address_book);
 				break;
 			case e_search_contact:
 				search_contact(address_book);
@@ -118,15 +120,20 @@ Status menu(AddressBook *address_book)
 				delete_contact(address_book);
 				break;
 			case e_list_contacts:
+				list_All_Contacts(address_book);
 				break;
 				/* Add your implementation to call list_contacts function here */
 			case e_save:
 				save_file(address_book);
 				break;
 			case e_exit:
+				option = e_exit;
 				break;
 		}
-	} while (option != e_exit);
+		getchar();
+		printf("Would you like to exit the program? y/n: ");
+		scanf("%c", &exitOpt);
+	} while ( exitOpt != 'y');
 
 	return e_success;
 }
@@ -134,11 +141,34 @@ Status menu(AddressBook *address_book)
 Status add_contacts(AddressBook *address_book)
 {
 	/* Add the functionality for adding contacts here */
+	ContactInfo info;
+	FILE *fp;
+	if((fp = fopen(DEFAULT_FILE, "a+")) == NULL)
+	{	
+		printf("File cannot be opened \n");
+		return e_fail;
+	}
+	fp = fopen(DEFAULT_FILE, "a");
+	printf("Enter username : ");
+	scanf("\n%s", info.name);
+	printf("Enter phone no : ");
+	scanf("%s", info.phone_numbers[0]);
+	getchar();
+	printf("Enter phone no#2: ");
+	scanf("%s", info.phone_numbers[1]);
+	getchar();
+	printf("Enter email id : ");
+	scanf("%s", info.email_addresses);
+	fwrite(&info, sizeof(info), 1, fp);
+	fclose(fp);
+
+	return e_success;
 }
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
 {
 	/* Add the functionality for adding contacts here */
+
 }
 
 Status search_contact(AddressBook *address_book)
@@ -155,3 +185,37 @@ Status delete_contact(AddressBook *address_book)
 {
 	/* Add the functionality for delete contacts here */
 }
+
+Status list_All_Contacts(AddressBook *addressbook){
+	FILE *infile;
+    ContactInfo information;
+     
+    infile = fopen (DEFAULT_FILE, "r");
+    if (infile == NULL)
+    {
+        fprintf(stderr, "\nError opening file\n");
+        exit (1);
+    }
+     
+    // read file contents till end of file
+    while(fread(&information, sizeof(ContactInfo), 1, infile))
+	{
+        printf ("Name = %s  \n", information.name);
+		for(int i = 0; i < 5; i++){
+			printf("Phone number %d: %s \n", i, information.phone_numbers[i]);
+		}
+		printf ("Email = %s  \n", information.email_addresses);
+	}
+ 
+    // close file
+    fclose (infile);
+}
+
+/*
+int main(){
+	AddressBook address_book;
+	add_contacts(&address_book);
+	list_All_Contacts(&address_book);
+	menu(&address_book);
+}
+*/
