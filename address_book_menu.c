@@ -7,6 +7,26 @@
 #include "address_book_menu.h"
 #include "address_book.h"
 
+int count = 1;
+Status getCount(){
+	FILE *file;
+    ContactInfo information;
+	file = fopen (DEFAULT_FILE, "r");
+	count = 1;
+    if (file == NULL)
+    {
+        return e_exit;
+    }
+	while(fread(&information, sizeof(ContactInfo), 1, file))
+	{
+		count++;
+	}
+	//printf("The count is %d .\n", count);
+    // close file
+    fclose (file);
+	return e_success;
+}
+
 int get_option(int type, const char *msg)
 {
 	/*
@@ -86,10 +106,10 @@ Status menu(AddressBook *address_book)
 	Status ret;
 	int option;
 	char exitOpt;
+
 	do
 	{
 		main_menu();
-
 		option = get_option(NUM, "");
 
 		if ((address_book-> count == 0) && (option != e_add_contact))
@@ -103,7 +123,7 @@ Status menu(AddressBook *address_book)
 		int option;
 		scanf("%d", &option);
 		
-
+		getCount();
 		switch (option)
 		{
 			case e_add_contact:
@@ -149,6 +169,8 @@ Status add_contacts(AddressBook *address_book)
 		return e_fail;
 	}
 	fp = fopen(DEFAULT_FILE, "a");
+	
+	info.si_no = count;
 	printf("Enter username : ");
 	scanf("\n%s", info.name);
 	printf("Enter phone no : ");
@@ -200,7 +222,7 @@ Status list_All_Contacts(AddressBook *addressbook){
     // read file contents till end of file
     while(fread(&information, sizeof(ContactInfo), 1, infile))
 	{
-        printf ("Name = %s  \n", information.name);
+        printf ("%d. Name = %s  \n",information.si_no, information.name);
 		for(int i = 0; i < 5; i++){
 			printf("Phone number %d: %s \n", i, information.phone_numbers[i]);
 		}
@@ -211,11 +233,8 @@ Status list_All_Contacts(AddressBook *addressbook){
     fclose (infile);
 }
 
-/*
+
 int main(){
 	AddressBook address_book;
-	add_contacts(&address_book);
-	list_All_Contacts(&address_book);
 	menu(&address_book);
 }
-*/
