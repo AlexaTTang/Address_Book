@@ -210,8 +210,8 @@ Status edit_contact(AddressBook *address_book)
 
 	scanf("%d", &selection);
 
-	int counter;
-	int saveCounter;
+	int counter = 0;
+	int saveCounter = 0;
 	switch(selection) {
 		case 0:
 			return e_back;
@@ -230,7 +230,6 @@ Status edit_contact(AddressBook *address_book)
 					fwrite(&editInfo, sizeof(editInfo), 1, rewriteFile);
 					counter++;
 					saveCounter = counter;
-					printf("Edited Successfully\n");
 				}
 			}
 			break;
@@ -240,12 +239,13 @@ Status edit_contact(AddressBook *address_book)
 
 			while (fread(&editInfo, sizeof(editInfo), 1, fp) == 1) {
 				if (strcmp(phoneNum, *editInfo.phone_numbers)) {
-					printf("Enter the phone number you would like to change to: ");
-					scanf("\n%s", editInfo.phone_numbers); //mult phone numbers??
 					fwrite(&editInfo, sizeof(editInfo), 1, rewriteFile);
 					counter = 0;
 				}
 				else {
+					printf("Enter the phone number you would like to change to: ");
+					scanf("\n%s", editInfo.phone_numbers);
+					fwrite(&editInfo, sizeof(editInfo), 1, rewriteFile);
 					counter++;
 					saveCounter = counter;
 				}
@@ -257,12 +257,13 @@ Status edit_contact(AddressBook *address_book)
 
 			while (fread(&editInfo, sizeof(editInfo), 1, fp) == 1) {
 				if (strcmp(email, *editInfo.email_addresses)) {
-					printf("Enter the email ID you would like to change to: ");
-					scanf("\n%s", editInfo.email_addresses);
 					fwrite(&editInfo, sizeof(editInfo), 1, rewriteFile);
 					counter = 0;
 				}
 				else {
+					printf("Enter the email ID you would like to change to: ");
+					scanf("\n%s", editInfo.email_addresses);
+					fwrite(&editInfo, sizeof(editInfo), 1, rewriteFile);
 					counter++;
 					saveCounter = counter;
 				}
@@ -274,8 +275,6 @@ Status edit_contact(AddressBook *address_book)
 	}
 
 	fclose(fp);
-	fclose(fp);
-	fclose(rewriteFile);
 	fclose(rewriteFile);
 
 	remove(DEFAULT_FILE);
@@ -290,7 +289,6 @@ Status edit_contact(AddressBook *address_book)
 	}
 	return e_success;
 }
-
 
 Status delete_contact(AddressBook *address_book)
 {
