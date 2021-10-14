@@ -178,7 +178,6 @@ Status search_contact(AddressBook *address_book)
 Status edit_contact(AddressBook *address_book)
 {
 	/* Add the functionality for edit contacts here */
-	/* Add the functionality for edit contacts here */
 	ContactInfo editInfo;
 
 	FILE *fp;
@@ -211,8 +210,8 @@ Status edit_contact(AddressBook *address_book)
 
 	scanf("%d", &selection);
 
-	int counter;
-	int saveCounter;
+	int counter = 0;
+	int saveCounter = 0;
 	switch(selection) {
 		case 0:
 			return e_back;
@@ -231,7 +230,6 @@ Status edit_contact(AddressBook *address_book)
 					fwrite(&editInfo, sizeof(editInfo), 1, rewriteFile);
 					counter++;
 					saveCounter = counter;
-					printf("Edited Successfully\n");
 				}
 			}
 			break;
@@ -241,12 +239,13 @@ Status edit_contact(AddressBook *address_book)
 
 			while (fread(&editInfo, sizeof(editInfo), 1, fp) == 1) {
 				if (strcmp(phoneNum, *editInfo.phone_numbers)) {
-					printf("Enter the phone number you would like to change to: ");
-					scanf("\n%s", editInfo.phone_numbers); //mult phone numbers??
 					fwrite(&editInfo, sizeof(editInfo), 1, rewriteFile);
 					counter = 0;
 				}
 				else {
+					printf("Enter the phone number you would like to change to: ");
+					scanf("\n%s", editInfo.phone_numbers);
+					fwrite(&editInfo, sizeof(editInfo), 1, rewriteFile);
 					counter++;
 					saveCounter = counter;
 				}
@@ -258,12 +257,13 @@ Status edit_contact(AddressBook *address_book)
 
 			while (fread(&editInfo, sizeof(editInfo), 1, fp) == 1) {
 				if (strcmp(email, *editInfo.email_addresses)) {
-					printf("Enter the email ID you would like to change to: ");
-					scanf("\n%s", editInfo.email_addresses);
 					fwrite(&editInfo, sizeof(editInfo), 1, rewriteFile);
 					counter = 0;
 				}
 				else {
+					printf("Enter the email ID you would like to change to: ");
+					scanf("\n%s", editInfo.email_addresses);
+					fwrite(&editInfo, sizeof(editInfo), 1, rewriteFile);
 					counter++;
 					saveCounter = counter;
 				}
@@ -275,9 +275,7 @@ Status edit_contact(AddressBook *address_book)
 	}
 
 	fclose(fp);
-	// fclose(fp);
 	fclose(rewriteFile);
-	// fclose(rewriteFile);
 
 	remove(DEFAULT_FILE);
 	rename("temporaryFile.csv", DEFAULT_FILE);
@@ -315,6 +313,7 @@ Status delete_contact(AddressBook *address_book)
 	char name[NAME_LEN];
 	char phoneNum[NUMBER_LEN];
 	char email[EMAIL_ID_LEN];
+	int serialNo;
 
 	menu_header("Search Contact to Delete By:\n");
 	printf("0. Back \n");
@@ -327,8 +326,8 @@ Status delete_contact(AddressBook *address_book)
 
 	scanf("%d", &selection);
 
-	int counter;
-	int saveCounter;
+	int counter = 0;
+	int saveCounter = 0;
 	switch(selection) {
 		case 0:
 			return e_back;
@@ -351,13 +350,19 @@ Status delete_contact(AddressBook *address_book)
 		case 2:
 			printf("Enter the Phone No: ");
 			scanf("%s", phoneNum);
+			int boolAlreadyDeleted = 0;
 
 			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
-				if (strcmp(phoneNum, *delInfo.phone_numbers)) {
+				/*for (int i = 0; i < PHONE_NUMBER_COUNT; i++){
+
+				}*/
+				
+				if (strcmp(phoneNum, *delInfo.phone_numbers) || boolAlreadyDeleted) {
 					fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
 					counter = 0;
 				}
 				else {
+					boolAlreadyDeleted = 1;
 					counter++;
 					saveCounter = counter;
 				}
@@ -378,6 +383,21 @@ Status delete_contact(AddressBook *address_book)
 				}
 			}
 			break;
+		case 4:
+			printf("Enter the serial No: ");
+			scanf("%d", serialNo);
+
+			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
+				if (!(serialNo == delInfo.si_no)) {
+					fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
+					counter = 0;
+				}
+				else {
+					counter++;
+					saveCounter = counter;
+				}
+			}
+			break;
 		default:
 			printf("Invalid option.\n");
 			return e_no_match;
@@ -389,6 +409,8 @@ Status delete_contact(AddressBook *address_book)
 	remove(DEFAULT_FILE);
 	rename("temporaryFile.csv", DEFAULT_FILE);
 
+	printf("%d\n", counter);
+	printf("%d\n", saveCounter);
 	if (!saveCounter) {
 		printf("Could not find that contact detail.\n");
 		return e_fail;
