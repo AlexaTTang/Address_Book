@@ -368,14 +368,15 @@ Status delete_contact(AddressBook *address_book)
 	printf("1. Name\n");
 	printf("2. Phone No\n");
 	printf("3. Email ID\n");
-	printf("4. Serial No\n");
 	printf("\nPlease select an option: ");
 	int selection;
 
 	scanf("%d", &selection);
 
-	int counter;
-	int saveCounter;
+	int counter = 0;
+	int saveCounter = 0;
+	int entry = 0;
+	int boolAlreadyDeleted = 0;
 	switch(selection) {
 		case 0:
 			return e_back;
@@ -384,14 +385,18 @@ Status delete_contact(AddressBook *address_book)
 			scanf("\n%s", name);
 
 			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
-				if (strcmp(name, *delInfo.name)) {
+				entry++;
+				if (strcmp(name, *delInfo.name) || boolAlreadyDeleted) {
+					if (boolAlreadyDeleted) {
+						delInfo.si_no = entry - 1;
+					}
 					fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
 					counter = 0;
 				}
 				else {
+					boolAlreadyDeleted = 1;
 					counter++;
 					saveCounter = counter;
-					printf("Deleted Successfully\n");
 				}
 			}
 			break;
@@ -400,13 +405,23 @@ Status delete_contact(AddressBook *address_book)
 			scanf("%s", phoneNum);
 
 			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
-				if (strcmp(phoneNum, *delInfo.phone_numbers)) {
-					fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
-					counter = 0;
-				}
-				else {
-					counter++;
-					saveCounter = counter;
+				entry++;
+				for (int i = 0; i < PHONE_NUMBER_COUNT; i++) {
+					if (strcmp(phoneNum, delInfo.phone_numbers[i]) || boolAlreadyDeleted) {
+						if (boolAlreadyDeleted) {
+							delInfo.si_no = entry - 1;
+						}
+						if (i == 4) {
+							fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
+							counter = 0;
+						}
+					}
+					else {
+						boolAlreadyDeleted = 1;
+						counter++;
+						saveCounter = counter;
+						break;
+					}
 				}
 			}
 			break;
@@ -415,13 +430,23 @@ Status delete_contact(AddressBook *address_book)
 			scanf("%s", email);
 
 			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
-				if (strcmp(email, *delInfo.email_addresses)) {
-					fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
-					counter = 0;
-				}
-				else {
-					counter++;
-					saveCounter = counter;
+				entry++;
+				for (int i = 0; i < EMAIL_ID_COUNT; i++) {
+					if (strcmp(email, delInfo.email_addresses[i]) || boolAlreadyDeleted) {
+						if (boolAlreadyDeleted) {
+							delInfo.si_no = entry - 1;
+						}
+						if (i == 4) {
+							fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
+							counter = 0;
+						}
+					}
+					else {
+						boolAlreadyDeleted = 1;
+						counter++;
+						saveCounter = counter;
+						break;
+					}
 				}
 			}
 			break;
