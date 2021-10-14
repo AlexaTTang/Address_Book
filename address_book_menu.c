@@ -446,8 +446,8 @@ Status list_All_Contacts(AddressBook *addressbook){
     fclose (infile);
 }
 
-
+/*
 int main(){
 	AddressBook address_book;
 	menu(&address_book);
-}
+}*/
