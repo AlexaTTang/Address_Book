@@ -168,8 +168,11 @@ Status add_contacts(AddressBook *address_book)
 		printf("File cannot be opened \n");
 		return e_fail;
 	}
+	info.si_no = count;
+	do{
 	printf("Enter username : ");
 	scanf("\n%s", info.name);
+	} while (strlen(info.name) > 32);
 	printf("Enter phone no : ");
 	scanf("%s", info.phone_numbers[0]);
 	getchar();
