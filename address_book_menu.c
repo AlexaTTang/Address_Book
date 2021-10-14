@@ -142,12 +142,6 @@ Status add_contacts(AddressBook *address_book)
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
 {
-	menu_header("Search Result: \n"); // Adds header saying address book
-
-    printf("=============================================================================================================="); // Top border
-    printf("\n: S.No : Name                            : Phone No                        : Email ID                        :"); // Headers
-    printf("\n=============================================================================================================="); // Middle border
-
 	ContactInfo *ptr = address_book->list; // Get starting pointer
    	ContactInfo *endPtr = ptr + address_book->count; // Get ending pointer
    	unsigned int matchFound = 0;
@@ -178,25 +172,6 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
          		match = atoi(str) != ptr->si_no; // Check if the user's search matches any serial numbers
 				break;
    		}
-
-      	if (match == 0) {
-         	matchFound++;
-         	printf("\n: %d", contact.si_no); // Prints serial number
-
-         	printf(": %-32s", contact.name); // Prints name
-         
-         	printf(": %-32s", contact.phone_numbers[0]); // Prints a phone number
-
-         	printf(": %-32s:\n", contact.email_addresses[0]); // Prints an email address
-
-         	for (int info = 1; info < PHONE_NUMBER_COUNT; info++) {
-            	printf(":      :                                 : %-32s", contact.phone_numbers[info]); // Print other phone numbers
-
-            	printf(": %-32s:\n", contact.email_addresses[info]); // Print other email addresses
-         	}
-         	printf("\n=============================================================================================================="); // Bottom border
-      	}
-    }
 
     printf("%s", msg);
 
@@ -257,6 +232,41 @@ Status search_contact(AddressBook *address_book)
 Status edit_contact(AddressBook *address_book)
 {
 	/* Add the functionality for edit contacts here */
+}
+
+Status list_All_Contacts(AddressBook *addressbook){
+	FILE *infile;
+    ContactInfo information;
+     
+    infile = fopen (DEFAULT_FILE, "r");
+    if (infile == NULL)
+    {
+        fprintf(stderr, "\nError opening file\n");
+        exit (1);
+    }
+     
+	menu_header("Search Result: \n"); // Adds header saying address book
+
+    printf("\n=============================================================================================================="); // Top border
+    printf("\n: S.No : Name                            : Phone No                        : Email ID                        :"); // Headers
+    printf("\n=============================================================================================================="); // Middle border
+
+    // read file contents till end of file
+    while(fread(&information, sizeof(ContactInfo), 1, infile))
+	{
+        printf (": %-5d: %-32s: %-32s: %-32s:",information.si_no, information.name, information.phone_numbers[0], information.email_addresses[0]);
+		for(int i = 1; i < PHONE_NUMBER_COUNT; i++){
+			printf(":      :                                 : %-32s: ", information.phone_numbers[i]);
+		}
+		for(int i = 1; i < 5; i++){
+			printf (":      :                                 :                                 : %-32s:", information.email_addresses[i]);
+		}
+	}
+
+	printf("\n=============================================================================================================="); // Bottom border
+
+    // close file
+    fclose (infile);
 }
 
 Status delete_contact(AddressBook *address_book)
