@@ -162,6 +162,9 @@ Status add_contacts(AddressBook *address_book)
 {
 	/* Add the functionality for adding contacts here */
 	ContactInfo info;
+	for(int i = 0; i < EMAIL_ID_COUNT; i++){
+		strcpy(info.email_addresses[i],"");
+	}
 	FILE *fp;
 	if((fp = fopen(DEFAULT_FILE, "a")) == NULL)
 	{	
@@ -172,15 +175,37 @@ Status add_contacts(AddressBook *address_book)
 	do{
 	printf("Enter username : ");
 	scanf("\n%s", info.name);
-	} while (strlen(info.name) > 32);
-	printf("Enter phone no : ");
-	scanf("%s", info.phone_numbers[0]);
-	getchar();
-	printf("Enter phone no#2: ");
-	scanf("%s", info.phone_numbers[1]);
-	getchar();
-	printf("Enter email id : ");
-	scanf("%s", info.email_addresses);
+	} while (strlen(*info.name) > 32);
+	// Add Phone numbers
+	char addMultiplePhone;
+	for(int i = 0; i<PHONE_NUMBER_COUNT; i++){
+		printf("Would you like to add a phone number? y/n : ");
+		getchar();
+		scanf("%c", &addMultiplePhone);
+		if(addMultiplePhone == 'y'){
+			do{
+				printf("Enter phone no. ID #%d: ", i+1);
+				scanf("%s", info.phone_numbers[i]);
+			}while (strlen(info.phone_numbers[i]) > 32);
+		} else {
+			break;
+		}
+	}
+	// Add Emails
+	char addMultipleEmails;
+	for(int i = 0; i<EMAIL_ID_COUNT; i++){
+		printf("Would you like to add a email ID? y/n : ");
+		getchar();
+		scanf("%c", &addMultipleEmails);
+		if(addMultipleEmails == 'y'){
+			do{
+				printf("Enter email ID #%d : ", i+1);
+				scanf("%s", info.email_addresses[i]);
+			}while (strlen(info.email_addresses[i]) > 32);
+		} else {
+			break;
+		}
+	}
 	fwrite(&info, sizeof(info), 1, fp);
 	fclose(fp);
 
@@ -436,18 +461,19 @@ Status list_All_Contacts(AddressBook *addressbook){
     while(fread(&information, sizeof(ContactInfo), 1, infile))
 	{
         printf ("%d. Name = %s  \n",information.si_no, information.name);
-		for(int i = 0; i < 5; i++){
-			printf("Phone number %d: %s \n", i, information.phone_numbers[i]);
+		for(int i = 0; i < PHONE_NUMBER_COUNT; i++){
+			printf("Phone number %d: %s \n", i + 1, information.phone_numbers[i]);
 		}
-		printf ("Email = %s  \n", information.email_addresses);
+		for(int i = 0; i < 5; i++){
+			printf ("Email ID#%d = %s  \n", i + 1, information.email_addresses[i]);
+		}
 	}
- 
     // close file
     fclose (infile);
 }
 
-
+/*
 int main(){
 	AddressBook address_book;
 	menu(&address_book);
-}
+} */
