@@ -482,17 +482,24 @@ Status list_All_Contacts(AddressBook *addressbook){
         exit (1);
     }
      
+	menu_header("Search Result: \n"); // Adds header saying address book
+
+    printf("\n=============================================================================================================="); // Top border
+    printf("\n: S.No : Name                            : Phone No                        : Email ID                        :"); // Headers
+    printf("\n=============================================================================================================="); // Middle border
+
     // read file contents till end of file
     while(fread(&information, sizeof(ContactInfo), 1, infile))
 	{
-        printf ("%d. Name = %s  \n",information.si_no, information.name);
-		for(int i = 0; i < PHONE_NUMBER_COUNT; i++){
-			printf("Phone number %d: %s \n", i + 1, information.phone_numbers[i]);
+        printf ("\n: %-5d: %-32s: %-32s: %-32s:",information.si_no, information.name, information.phone_numbers[0], information.email_addresses[0]);
+		for(int i = 1; i < EMAIL_ID_COUNT; i++){
+			printf("\n:      :                                 : %-32s: %-32s:", information.phone_numbers[i], information.email_addresses[i]);
 		}
-		for(int i = 0; i < 5; i++){
-			printf ("Email ID#%d = %s  \n", i + 1, information.email_addresses[i]);
-		}
+		
 	}
+
+	printf("\n==============================================================================================================\n"); // Bottom border
+
     // close file
     fclose (infile);
 }
