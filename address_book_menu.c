@@ -254,13 +254,11 @@ Status list_All_Contacts(AddressBook *addressbook){
     // read file contents till end of file
     while(fread(&information, sizeof(ContactInfo), 1, infile))
 	{
-        printf (": %-5d: %-32s: %-32s: %-32s:",information.si_no, information.name, information.phone_numbers[0], information.email_addresses[0]);
-		for(int i = 1; i < PHONE_NUMBER_COUNT; i++){
-			printf(":      :                                 : %-32s: ", information.phone_numbers[i]);
+        printf ("\n: %-5d: %-32s: %-32s: %-32s:",information.si_no, information.name, information.phone_numbers[0], information.email_addresses[0]);
+		for(int i = 1; i < 10; i++){
+			printf("\n:      :                                 : %-32s: %-32s:", information.phone_numbers[i], information.email_addresses[i]);
 		}
-		for(int i = 1; i < 5; i++){
-			printf (":      :                                 :                                 : %-32s:", information.email_addresses[i]);
-		}
+		
 	}
 
 	printf("\n=============================================================================================================="); // Bottom border
