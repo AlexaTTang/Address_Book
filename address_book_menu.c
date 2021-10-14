@@ -496,10 +496,11 @@ Status list_All_Contacts(AddressBook *addressbook){
 			printf("\n:      :                                 : %-32s: %-32s:", information.phone_numbers[i], information.email_addresses[i]);
 		}
 		
+		printf("\n=============================================================================================================="); // Bottom border
+
 	}
-
-	printf("\n==============================================================================================================\n"); // Bottom border
-
+	printf("\n");
+	
     // close file
     fclose (infile);
 }
