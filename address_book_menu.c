@@ -271,7 +271,7 @@ Status search_contact(AddressBook *address_book)
 			printf("Enter the Name: ");
 			scanf("\n%s", name);
 
-			while (fread(&sInfoo, sizeof(sInfoo), 1, fp) == 1) {
+			while (fread(&sInfo, sizeof(sInfo), 1, fp) == 1) {
 				entry++;
 				if (strcmp(name, *sInfo.name) == 0) {
 					printf("the name is %s. , the phone is : %s, the email is %s." , sinfo.name , sinfo.pone_number, sinfo.email_addresses);
@@ -290,7 +290,7 @@ Status search_contact(AddressBook *address_book)
 
 			while (fread(&sInfo, sizeof(sInfo), 1, fp) == 1) {
 				entry++;
-				if (strcmp(phoneNum, *sInfo.phoneNum) == 0) {
+				if (strcmp(phoneNum, *sInfo.phone_numbers) == 0) {
 					printf("the name is %s. , the phone is : %s, the email is %s." , sinfo.name , sinfo.phone_number, sinfo.email_addresses);
 					counter = 0;
 				}
@@ -309,7 +309,7 @@ Status search_contact(AddressBook *address_book)
 				entry++;
 				while (fread(&sInfo, sizeof(sInfo), 1, fp) == 1) {
 				entry++;
-				if (strcmp( email, *sInfo. email) == 0) {
+				if (strcmp( email, *sInfo.email_addresses) == 0) {
 					printf("the name is %s. , the phone is : %s, the email is %s." , sinfo.name , sinfo.phone_number, sinfo.email_addresses);
 					counter = 0;
 				}
