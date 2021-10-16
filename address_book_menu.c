@@ -171,6 +171,9 @@ Status add_contacts(AddressBook *address_book)
 {
 	/* Add the functionality for adding contacts here */
 	ContactInfo info;
+	for(int i = 0; i < PHONE_NUMBER_COUNT; i++){
+		strcpy(info.phone_numbers[i],"");
+	}
 	for(int i = 0; i < EMAIL_ID_COUNT; i++){
 		strcpy(info.email_addresses[i],"");
 	}
