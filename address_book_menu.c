@@ -250,7 +250,7 @@ Status search_contact(AddressBook *address_book)
 	char phoneNum[NUMBER_LEN];
 	char email[EMAIL_ID_LEN];
 
-	menu_header("Search Contact to Delete By:\n");
+	menu_header("Search Contact By:\n");
 	printf("0. Back \n");
 	printf("1. Name\n");
 	printf("2. Phone No\n");
@@ -263,7 +263,7 @@ Status search_contact(AddressBook *address_book)
 	int counter = 0;
 	int saveCounter = 0;
 	int entry = 0;
-	int boolAlreadyDeleted = 0;
+	int search = 0;
 	switch(selection) {
 		case 0:
 			return e_back;
@@ -273,15 +273,15 @@ Status search_contact(AddressBook *address_book)
 
 			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
 				entry++;
-				if (strcmp(name, *delInfo.name) || boolAlreadyDeleted) {
-					if (boolAlreadyDeleted) {
+				if (strcmp(name, *delInfo.name) || search) {
+					if (search) {
 						delInfo.si_no = entry - 1;
 					}
 					fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
 					counter = 0;
 				}
 				else {
-					boolAlreadyDeleted = 1;
+					search = 1;
 					counter++;
 					saveCounter = counter;
 				}
@@ -294,8 +294,8 @@ Status search_contact(AddressBook *address_book)
 			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
 				entry++;
 				for (int i = 0; i < PHONE_NUMBER_COUNT; i++) {
-					if (strcmp(phoneNum, delInfo.phone_numbers[i]) || boolAlreadyDeleted) {
-						if (boolAlreadyDeleted) {
+					if (strcmp(phoneNum, delInfo.phone_numbers[i]) || search) {
+						if (search) {
 							delInfo.si_no = entry - 1;
 						}
 						if (i == 4) {
@@ -304,7 +304,7 @@ Status search_contact(AddressBook *address_book)
 						}
 					}
 					else {
-						boolAlreadyDeleted = 1;
+						search = 1;
 						counter++;
 						saveCounter = counter;
 						break;
@@ -319,8 +319,8 @@ Status search_contact(AddressBook *address_book)
 			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
 				entry++;
 				for (int i = 0; i < EMAIL_ID_COUNT; i++) {
-					if (strcmp(email, delInfo.email_addresses[i]) || boolAlreadyDeleted) {
-						if (boolAlreadyDeleted) {
+					if (strcmp(email, delInfo.email_addresses[i]) || searchd) {
+						if (search) {
 							delInfo.si_no = entry - 1;
 						}
 						if (i == 4) {
@@ -329,7 +329,7 @@ Status search_contact(AddressBook *address_book)
 						}
 					}
 					else {
-						boolAlreadyDeleted = 1;
+						search = 1;
 						counter++;
 						saveCounter = counter;
 						break;
@@ -341,11 +341,14 @@ Status search_contact(AddressBook *address_book)
 			printf("Invalid option.\n");
 			return e_no_match;
 	}
-
+	
 	fclose(fp);
 	fclose(rewriteFile);
-/* Add the functionality for search contacts here */
+	
+	printf(DEFAULT_FILE);
+	
 }
+
 
 Status edit_contact(AddressBook *address_book)
 {
