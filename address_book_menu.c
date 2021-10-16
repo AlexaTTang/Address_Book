@@ -229,7 +229,7 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 
 Status search_contact(AddressBook *address_book)
 {
-	ContactInfo delInfo;
+	ContactInfo sInfo;
 
 	FILE *fp;
 	FILE *rewriteFile;
@@ -271,13 +271,10 @@ Status search_contact(AddressBook *address_book)
 			printf("Enter the Name: ");
 			scanf("\n%s", name);
 
-			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
+			while (fread(&sInfoo, sizeof(sInfoo), 1, fp) == 1) {
 				entry++;
-				if (strcmp(name, *delInfo.name) || search) {
-					if (search) {
-						delInfo.si_no = entry - 1;
-					}
-					fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
+				if (strcmp(name, *sInfo.name) == 0) {
+					printf("the name is %s. , the phone is : %s, the email is %s." , sinfo.name , sinfo.pone_number, sinfo.email_addresses);
 					counter = 0;
 				}
 				else {
@@ -291,24 +288,16 @@ Status search_contact(AddressBook *address_book)
 			printf("Enter the Phone No: ");
 			scanf("%s", phoneNum);
 
-			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
+			while (fread(&sInfo, sizeof(sInfo), 1, fp) == 1) {
 				entry++;
-				for (int i = 0; i < PHONE_NUMBER_COUNT; i++) {
-					if (strcmp(phoneNum, delInfo.phone_numbers[i]) || search) {
-						if (search) {
-							delInfo.si_no = entry - 1;
-						}
-						if (i == 4) {
-							fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
-							counter = 0;
-						}
-					}
-					else {
-						search = 1;
-						counter++;
-						saveCounter = counter;
-						break;
-					}
+				if (strcmp(phoneNum, *sInfo.phoneNum) == 0) {
+					printf("the name is %s. , the phone is : %s, the email is %s." , sinfo.name , sinfo.phone_number, sinfo.email_addresses);
+					counter = 0;
+				}
+				else {
+					search = 1;
+					counter++;
+					saveCounter = counter;
 				}
 			}
 			break;
@@ -316,24 +305,18 @@ Status search_contact(AddressBook *address_book)
 			printf("Enter the Email ID: ");
 			scanf("%s", email);
 
-			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
+			while (fread(&sInfo, sizeof(sInfo), 1, fp) == 1) {
 				entry++;
-				for (int i = 0; i < EMAIL_ID_COUNT; i++) {
-					if (strcmp(email, delInfo.email_addresses[i]) || searchd) {
-						if (search) {
-							delInfo.si_no = entry - 1;
-						}
-						if (i == 4) {
-							fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
-							counter = 0;
-						}
-					}
-					else {
-						search = 1;
-						counter++;
-						saveCounter = counter;
-						break;
-					}
+				while (fread(&sInfo, sizeof(sInfo), 1, fp) == 1) {
+				entry++;
+				if (strcmp( email, *sInfo. email) == 0) {
+					printf("the name is %s. , the phone is : %s, the email is %s." , sinfo.name , sinfo.phone_number, sinfo.email_addresses);
+					counter = 0;
+				}
+				else {
+					search = 1;
+					counter++;
+					saveCounter = counter;
 				}
 			}
 			break;
@@ -342,10 +325,14 @@ Status search_contact(AddressBook *address_book)
 			return e_no_match;
 	}
 	
-	fclose(fp);
-	fclose(rewriteFile);
-	
-	printf(DEFAULT_FILE);
+	if (!saveCounter) {
+		printf("Could not find that contact detail.\n");
+		return e_fail;
+	}
+	else {
+		printf("That contact details has been found successfully.\n");
+	}
+	return e_success;
 	
 }
 
