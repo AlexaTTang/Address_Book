@@ -229,7 +229,122 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 
 Status search_contact(AddressBook *address_book)
 {
-	/* Add the functionality for search contacts here */
+	ContactInfo delInfo;
+
+	FILE *fp;
+	FILE *rewriteFile;
+
+	if ((fp = fopen(DEFAULT_FILE, "r")) == NULL) {
+		printf("File can't be opened\n");
+		return e_fail;
+	}
+	else {
+		rewriteFile = fopen("temporaryFile.csv", "w");
+		if (rewriteFile == NULL) {
+			printf("File can't be opened\n");
+			return e_fail;
+		}
+	}
+
+	char name[NAME_LEN];
+	char phoneNum[NUMBER_LEN];
+	char email[EMAIL_ID_LEN];
+
+	menu_header("Search Contact to Delete By:\n");
+	printf("0. Back \n");
+	printf("1. Name\n");
+	printf("2. Phone No\n");
+	printf("3. Email ID\n");
+	printf("\nPlease select an option: ");
+	int selection;
+
+	scanf("%d", &selection);
+
+	int counter = 0;
+	int saveCounter = 0;
+	int entry = 0;
+	int boolAlreadyDeleted = 0;
+	switch(selection) {
+		case 0:
+			return e_back;
+		case 1:
+			printf("Enter the Name: ");
+			scanf("\n%s", name);
+
+			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
+				entry++;
+				if (strcmp(name, *delInfo.name) || boolAlreadyDeleted) {
+					if (boolAlreadyDeleted) {
+						delInfo.si_no = entry - 1;
+					}
+					fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
+					counter = 0;
+				}
+				else {
+					boolAlreadyDeleted = 1;
+					counter++;
+					saveCounter = counter;
+				}
+			}
+			break;
+		case 2:
+			printf("Enter the Phone No: ");
+			scanf("%s", phoneNum);
+
+			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
+				entry++;
+				for (int i = 0; i < PHONE_NUMBER_COUNT; i++) {
+					if (strcmp(phoneNum, delInfo.phone_numbers[i]) || boolAlreadyDeleted) {
+						if (boolAlreadyDeleted) {
+							delInfo.si_no = entry - 1;
+						}
+						if (i == 4) {
+							fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
+							counter = 0;
+						}
+					}
+					else {
+						boolAlreadyDeleted = 1;
+						counter++;
+						saveCounter = counter;
+						break;
+					}
+				}
+			}
+			break;
+		case 3:
+			printf("Enter the Email ID: ");
+			scanf("%s", email);
+
+			while (fread(&delInfo, sizeof(delInfo), 1, fp) == 1) {
+				entry++;
+				for (int i = 0; i < EMAIL_ID_COUNT; i++) {
+					if (strcmp(email, delInfo.email_addresses[i]) || boolAlreadyDeleted) {
+						if (boolAlreadyDeleted) {
+							delInfo.si_no = entry - 1;
+						}
+						if (i == 4) {
+							fwrite(&delInfo, sizeof(delInfo), 1, rewriteFile);
+							counter = 0;
+						}
+					}
+					else {
+						boolAlreadyDeleted = 1;
+						counter++;
+						saveCounter = counter;
+						break;
+					}
+				}
+			}
+			break;
+		default:
+			printf("Invalid option.\n");
+			return e_no_match;
+	}
+
+	fclose(fp);
+	fclose(rewriteFile);
+/* Add the functionality for search contacts here */
 }
 
 Status edit_contact(AddressBook *address_book)
