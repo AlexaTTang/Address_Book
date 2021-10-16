@@ -232,18 +232,10 @@ Status search_contact(AddressBook *address_book)
 	ContactInfo sInfo;
 
 	FILE *fp;
-	FILE *rewriteFile;
 
 	if ((fp = fopen(DEFAULT_FILE, "r")) == NULL) {
 		printf("File can't be opened\n");
 		return e_fail;
-	}
-	else {
-		rewriteFile = fopen("temporaryFile.csv", "w");
-		if (rewriteFile == NULL) {
-			printf("File can't be opened\n");
-			return e_fail;
-		}
 	}
 
 	char name[NAME_LEN];
@@ -260,10 +252,8 @@ Status search_contact(AddressBook *address_book)
 
 	scanf("%d", &selection);
 
-	int counter = 0;
 	int saveCounter = 0;
-	int entry = 0;
-	int search = 0;
+	int boolFoundOne = 0;
 	switch(selection) {
 		case 0:
 			return e_back;
@@ -272,69 +262,85 @@ Status search_contact(AddressBook *address_book)
 			scanf("\n%s", name);
 
 			while (fread(&sInfo, sizeof(sInfo), 1, fp) == 1) {
-				entry++;
-				if (strcmp(name, *sInfo.name) == 0) {
-					printf("the name is %s. , the phone is : %s, the email is %s." , sinfo.name , sinfo.pone_number, sinfo.email_addresses);
-					counter = 0;
-				}
-				else {
-					search = 1;
-					counter++;
-					saveCounter = counter;
+				if (!strcmp(name, *sInfo.name)) {
+					if (!boolFoundOne) {
+						printf("\n=============================================================================================================="); // Top border
+    					printf("\n: S.No : Name                            : Phone No                        : Email ID                        :"); // Headers
+	    				printf("\n=============================================================================================================="); // Middle border
+					}
+					printf("\n: %-5d: %-32s: %-32s: %-32s:",sInfo.si_no, sInfo.name, sInfo.phone_numbers[0], sInfo.email_addresses[0]);
+					for(int i = 1; i < EMAIL_ID_COUNT; i++){
+						printf("\n:      :                                 : %-32s: %-32s:", sInfo.phone_numbers[i], sInfo.email_addresses[i]);
+					}
+					printf("\n=============================================================================================================="); // Bottom border
+					boolFoundOne = 1;
+					saveCounter = 1;
 				}
 			}
+			printf("\n");
 			break;
 		case 2:
 			printf("Enter the Phone No: ");
 			scanf("%s", phoneNum);
 
 			while (fread(&sInfo, sizeof(sInfo), 1, fp) == 1) {
-				entry++;
-				if (strcmp(phoneNum, *sInfo.phone_numbers) == 0) {
-					printf("the name is %s. , the phone is : %s, the email is %s." , sinfo.name , sinfo.phone_number, sinfo.email_addresses);
-					counter = 0;
-				}
-				else {
-					search = 1;
-					counter++;
-					saveCounter = counter;
+				for (int i = 0; i < PHONE_NUMBER_COUNT; i++) {
+					if (!strcmp(phoneNum, sInfo.phone_numbers[i])) {
+						if (!boolFoundOne) {
+							printf("\n=============================================================================================================="); // Top border
+    						printf("\n: S.No : Name                            : Phone No                        : Email ID                        :"); // Headers
+	    					printf("\n=============================================================================================================="); // Middle border
+						}
+						printf("\n: %-5d: %-32s: %-32s: %-32s:",sInfo.si_no, sInfo.name, sInfo.phone_numbers[0], sInfo.email_addresses[0]);
+						for(int i = 1; i < EMAIL_ID_COUNT; i++){
+							printf("\n:      :                                 : %-32s: %-32s:", sInfo.phone_numbers[i], sInfo.email_addresses[i]);
+						}
+						printf("\n=============================================================================================================="); // Bottom border
+						boolFoundOne = 1;
+						saveCounter = 1;
+					}
 				}
 			}
+			printf("\n");
 			break;
 		case 3:
 			printf("Enter the Email ID: ");
 			scanf("%s", email);
 
 			while (fread(&sInfo, sizeof(sInfo), 1, fp) == 1) {
-				entry++;
-				while (fread(&sInfo, sizeof(sInfo), 1, fp) == 1) {
-				entry++;
-				if (strcmp( email, *sInfo.email_addresses) == 0) {
-					printf("the name is %s. , the phone is : %s, the email is %s." , sinfo.name , sinfo.phone_number, sinfo.email_addresses);
-					counter = 0;
-				}
-				else {
-					search = 1;
-					counter++;
-					saveCounter = counter;
+				for (int i = 0; i < EMAIL_ID_COUNT; i++) {
+					if (!strcmp(email, sInfo.email_addresses[i])) {
+						if (!boolFoundOne) {
+							printf("\n=============================================================================================================="); // Top border
+    						printf("\n: S.No : Name                            : Phone No                        : Email ID                        :"); // Headers
+	    					printf("\n=============================================================================================================="); // Middle border
+						}
+						printf("\n: %-5d: %-32s: %-32s: %-32s:",sInfo.si_no, sInfo.name, sInfo.phone_numbers[0], sInfo.email_addresses[0]);
+						for(int i = 1; i < EMAIL_ID_COUNT; i++){
+							printf("\n:      :                                 : %-32s: %-32s:", sInfo.phone_numbers[i], sInfo.email_addresses[i]);
+						}
+						printf("\n=============================================================================================================="); // Bottom border
+						boolFoundOne = 1;
+						saveCounter = 1;
+					}
 				}
 			}
+			printf("\n");
 			break;
 		default:
 			printf("Invalid option.\n");
 			return e_no_match;
 	}
-	
+
+	fclose(fp);
+
 	if (!saveCounter) {
 		printf("Could not find that contact detail.\n");
-		return e_fail;
-	}
-	else {
-		printf("That contact details has been found successfully.\n");
+		return e_no_match;
 	}
 	return e_success;
-	
 }
+
 
 
 Status edit_contact(AddressBook *address_book)
